@@ -1,5 +1,5 @@
 # SE coursework at SoftUni
-This repository contains exercises and exam solutions from Software University's courses.
+Exercises and exam solutions from Software University's courses.
 
 
 ## Certificates
