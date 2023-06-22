@@ -3,7 +3,7 @@ Exercises and exam solutions from Software University's courses.
 
 
 ## Certificates
-| **Course** | **Link** |
+| **Course** | **Certificate** |
 | --------------------------------------------------------------------- | ---------------------------------------------------------- |
 | [Programming Basics with Java](https://softuni.bg/trainings/3625/programming-basics-with-java-february-2022) | [Link](https://softuni.bg/certificates/details/128705/6746d294) |
 | [Programming Fundamentals with Java](https://softuni.bg/trainings/3731/programming-fundamentals-with-java-may-2022) | [Link](https://softuni.bg/certificates/details/138599/bcd8a392) |
