@@ -104,3 +104,19 @@ JOIN cars_drivers ON cars_drivers.driver_id = drivers.id
 JOIN cars ON cars.id = cars_drivers.car_id
 WHERE cars.mileage IS NOT NULL
 ORDER BY mileage DESC, first_name;
+
+-- 07. Number of courses
+
+SELECT cars.id car_id, cars.make, cars.mileage,
+       COUNT(courses.car_id) count_of_courses, FORMAT(AVG(courses.bill),2) avg_bill
+FROM cars
+         LEFT JOIN courses ON courses.car_id = cars.id
+GROUP BY courses.car_id, cars.id having count_of_courses != 2
+ORDER BY count_of_courses desc, car_id;
+
+-- 08. Regular clients
+
+SELECT clients.full_name, COUNT(clients.id) count_of_cars, SUM(bill) total_sum FROM clients
+                                                                                        JOIN courses ON clients.id = courses.client_id
+GROUP BY clients.id HAVING count_of_cars > 1 AND clients.full_name LIKE '_a%'
+ORDER BY full_name;
