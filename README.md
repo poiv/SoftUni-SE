@@ -1,5 +1,5 @@
-# SE coursework at SoftUni
-Exercises and exam solutions from Software University's courses.
+# Software engineering coursework
+Exercises and exam solutions from [Software University](https://softuni.bg/)'s courses.
 
 
 ## Certificates
