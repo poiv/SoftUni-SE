@@ -156,3 +156,19 @@ JOIN clients ON clients.id = courses.client_id
 JOIN cars ON cars.id = courses.car_id
 JOIN categories ON categories.id = cars.category_id
 ORDER BY courses.id;
+
+-- 10. Find all courses by client's phone number
+
+DELIMITER
+$$
+CREATE FUNCTION udf_courses_by_client(phone_num VARCHAR (20))
+    RETURNS INT
+    DETERMINISTIC
+BEGIN
+RETURN (SELECT COUNT(*)
+        FROM clients
+                 JOIN courses on courses.client_id = clients.id
+        WHERE phone_num = clients.phone_number
+        GROUP BY clients.id);
+END $$
+DELIMITER ;
