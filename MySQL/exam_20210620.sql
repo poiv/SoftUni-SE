@@ -3,7 +3,6 @@
 -- create database stc; use stc;
 
 -- 1. Table Design
-
 CREATE TABLE addresses
 (
     `id`   INT PRIMARY KEY AUTO_INCREMENT,
@@ -31,8 +30,6 @@ CREATE TABLE categories
     `id`   INT PRIMARY KEY AUTO_INCREMENT,
     `name` VARCHAR(10) NOT NULL
 );
-
-
 
 CREATE TABLE cars
 (
@@ -63,7 +60,6 @@ CREATE TABLE courses
         FOREIGN KEY (client_id) REFERENCES clients (id)
 );
 
-
 CREATE TABLE cars_drivers
 (
     `car_id`    INT NOT NULL,
@@ -75,8 +71,8 @@ CREATE TABLE cars_drivers
     PRIMARY KEY (car_id, driver_id)
 );
 
--- 02. Insert
 
+-- 02. Insert
 INSERT INTO clients(full_name, phone_number)
 SELECT CONCAT(first_name, ' ', last_name) full_name,
        CONCAT('(088) 9999', id * 2)       phone_number
@@ -85,14 +81,12 @@ WHERE id >= 10
   AND id <= 20;
 
 -- 03. Update
-
 UPDATE cars
 SET cars.condition = 'C'
 WHERE (mileage > 800000 AND cars.year > 2010)
    OR NOT (make = 'Mercedes-Benz');
 
 -- 04. Delete
-
 DELETE
 FROM clients
 WHERE (SELECT COUNT(*)
@@ -101,13 +95,11 @@ WHERE (SELECT COUNT(*)
          AND length(full_name) > 3) = 0;
 
 -- 05. Cars
-
 SELECT make, model, `condition`
 FROM cars
 ORDER BY id;
 
 -- 06. Drivers and Cars
-
 SELECT first_name, last_name, make, model, mileage
 FROM drivers
          JOIN cars_drivers ON cars_drivers.driver_id = drivers.id
@@ -116,7 +108,6 @@ WHERE cars.mileage IS NOT NULL
 ORDER BY mileage DESC, first_name;
 
 -- 07. Number of courses
-
 SELECT cars.id                      car_id,
        cars.make,
        cars.mileage,
@@ -129,7 +120,6 @@ having count_of_courses != 2
 ORDER BY count_of_courses desc, car_id;
 
 -- 08. Regular clients
-
 SELECT clients.full_name, COUNT(clients.id) count_of_cars, SUM(bill) total_sum
 FROM clients
          JOIN courses ON clients.id = courses.client_id
@@ -139,7 +129,6 @@ HAVING count_of_cars > 1
 ORDER BY full_name;
 
 -- 09. Full information on courses
-
 SELECT addresses.name,
        CASE
            WHEN hour (courses.start) BETWEEN 6 AND 20 THEN "Day"
@@ -158,7 +147,6 @@ JOIN categories ON categories.id = cars.category_id
 ORDER BY courses.id;
 
 -- 10. Find all courses by client's phone number
-
 DELIMITER
 $$
 CREATE FUNCTION udf_courses_by_client(phone_num VARCHAR (20))
@@ -170,5 +158,30 @@ RETURN (SELECT COUNT(*)
                  JOIN courses on courses.client_id = clients.id
         WHERE phone_num = clients.phone_number
         GROUP BY clients.id);
+END $$
+DELIMITER ;
+
+-- 11. Full info for address
+DELIMITER
+$$
+CREATE PROCEDURE udp_courses_by_address(address_name VARCHAR (100))
+BEGIN
+SELECT addresses.name,
+       clients.full_name full_names,
+       CASE
+           WHEN courses.bill < 20 THEN 'Low'
+           WHEN courses.bill < 30 THEN 'Medium'
+           ELSE 'High'
+           END           level_of_bill,
+       cars.make,
+       cars.condition,
+       categories.name   cat_name
+FROM addresses
+         JOIN courses ON from_address_id = addresses.id
+         JOIN clients ON client_id = clients.id
+         JOIN cars ON courses.car_id = cars.id
+         JOIN categories ON categories.id = cars.category_id
+WHERE addresses.name = address_name
+ORDER BY cars.make, clients.full_name;
 END $$
 DELIMITER ;
