@@ -35,7 +35,7 @@ CREATE TABLE passengers
 
 CREATE TABLE flights
 (
-    id                  iNT PRIMARY KEY AUTO_INCREMENT,
+    id                  INT PRIMARY KEY AUTO_INCREMENT,
     flight_code         VARCHAR(30) NOT NULL UNIQUE,
     departure_country   INT         NOT NULL,
     destination_country INT         NOT NULL,
@@ -46,7 +46,9 @@ CREATE TABLE flights
     CONSTRAINT fk_flights_countries_departure
         FOREIGN KEY (departure_country) REFERENCES countries (id),
     CONSTRAINT fk_flights_countries_destination
-        FOREIGN KEY (destination_country) REFERENCES countries (id)
+        FOREIGN KEY (destination_country) REFERENCES countries (id),
+    CONSTRAINT fk_flights_airplanes
+        FOREIGN KEY (airplane_id) REFERENCES airplanes (id)
 );
 
 CREATE TABLE flights_passengers
