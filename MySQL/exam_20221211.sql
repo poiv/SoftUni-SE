@@ -4,7 +4,6 @@ create database airlines_db;
 use airlines_db;
 
 -- 01. Table Design
--- 26/40 score
 CREATE TABLE countries
 (
     id          INT PRIMARY KEY AUTO_INCREMENT,
@@ -75,3 +74,34 @@ UPDATE flights
     INNER JOIN countries ON flights.departure_country = countries.id
 SET airplane_id = flights.airplane_id + 1
 WHERE countries.name like 'Armenia';
+
+-- 4. Delete FIXME
+DELETE
+FROM flights
+WHERE id NOT IN (SELECT passenger_id FROM flights_passengers);
+
+-- 5. Airplanes
+SELECT *
+FROM airplanes
+ORDER BY cost desc, id desc;
+
+-- 6. Flights from 2022
+SELECT flight_code, departure_country, airplane_id, departure
+FROM flights
+WHERE YEAR(departure) = 2022
+ORDER BY airplane_id, flight_code
+LIMIT 20;
+
+-- 7. Private flights
+SELECT CONCAT(UPPER(LEFT(p.last_name, 2)), p.country_id) flight_code,
+       CONCAT_WS(' ', p.first_name, p.last_name)         full_name,
+       p.country_id
+FROM passengers p
+         LEFT JOIN flights_passengers fp on p.id = fp.passenger_id
+WHERE fp.flight_id iS NULL
+ORDER BY p.country_id;
+
+-- 8. Leading destination FIXME
+SELECT *
+FROM countries c
+         JOIN flights f on c.id = f.destination_country;
