@@ -101,7 +101,49 @@ FROM passengers p
 WHERE fp.flight_id iS NULL
 ORDER BY p.country_id;
 
--- 8. Leading destination FIXME
-SELECT *
+-- 8. Leading destination
+SELECT c.name, c.currency, COUNT(c.name) booked_tickets
 FROM countries c
-         JOIN flights f on c.id = f.destination_country;
+         JOIN flights f ON c.id = f.destination_country
+         JOIN flights_passengers fp ON f.id = fp.flight_id
+GROUP BY c.name
+HAVING booked_tickets >= 20
+ORDER BY booked_tickets DESC;
+
+-- 9. Parts of the day
+SELECT flight_code,
+       departure,
+       CASE
+           WHEN HOUR(departure) BETWEEN 5 AND 11 THEN 'Morning'
+           WHEN HOUR(departure) BETWEEN 12 AND 16 THEN 'Afternoon'
+           WHEN HOUR(departure) BETWEEN 17 AND 20 THEN 'Evening'
+           ELSE 'Night'
+           END day_part
+FROM flights
+ORDER BY flight_code DESC;
+
+-- 10. Number of flights
+DELIMITER
+$$
+CREATE FUNCTION udf_count_flights_from_country(country VARCHAR(50))
+    RETURNS INT
+    DETERMINISTIC
+BEGIN
+    RETURN (SELECT COUNT(*)
+            FROM flights
+                     JOIN countries c ON c.id = flights.departure_country
+            WHERE c.name LIKE country);
+END $$
+DELIMITER ;
+
+-- 11. Delay flight
+DELIMITER
+$$
+CREATE PROCEDURE udp_delay_flight(code VARCHAR(50))
+BEGIN
+    UPDATE flights
+    SET has_delay = TRUE,
+        departure = DATE_ADD(departure, INTERVAL 30 MINUTE)
+    WHERE flight_code LIKE code;
+END $$
+DELIMITER ;;
