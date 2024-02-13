@@ -75,10 +75,11 @@ UPDATE flights
 SET airplane_id = flights.airplane_id + 1
 WHERE countries.name like 'Armenia';
 
--- 4. Delete FIXME
-DELETE
+-- 4. Delete
+DELETE flights
 FROM flights
-WHERE id NOT IN (SELECT passenger_id FROM flights_passengers);
+         LEFT JOIN flights_passengers fp on flights.id = fp.flight_id
+WHERE fp.passenger_id IS NULL;
 
 -- 5. Airplanes
 SELECT *
