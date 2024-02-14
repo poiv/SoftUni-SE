@@ -117,7 +117,7 @@ SELECT COUNT(*) students_count, u.name
 FROM universities u
          JOIN courses c ON u.id = c.university_id
          JOIN students_courses sc ON sc.course_id = c.id
-GROUP BY c.university_id
+GROUP BY c.university_id, u.name
 HAVING students_count >= 8
 ORDER BY students_count DESC, u.name DESC;
 
@@ -134,7 +134,7 @@ SELECT u.name university_name,
        u.tuition_fee
 FROM universities u
          JOIN cities c ON u.city_id = c.id
-GROUP by u.id
+GROUP by u.id, u.tuition_fee
 ORDER BY u.tuition_fee;
 
 -- 10. Average grades
