@@ -12,6 +12,7 @@ function flightSchedule(input){
 
     console.log(statusArray)
 
+    // FIXME
 }
 
 function changeStatus(allFlights, destination){
