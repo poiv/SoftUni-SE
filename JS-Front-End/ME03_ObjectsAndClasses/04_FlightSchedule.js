@@ -4,7 +4,7 @@ function flightSchedule(input){
     let checkStatusArray = input[2];
 
     let allFlights = flightsArray.map((o) => arrayToObj(o));
-    let sta = statusArray.map((a) => changeStatus(allFlights, a.split(' ')[1]));
+    statusArray.forEach((a) => changeStatus(allFlights, a.split(' ')[1]));
 
     // console.log(allFlights);
 
@@ -16,8 +16,7 @@ function flightSchedule(input){
 }
 
 function changeStatus(allFlights, destination){
-    let flight =  allFlights.find((f) => f.destination === destination);
-    flight.status.push('Cancel');
+    allFlights.find((f) => f.destination === destination).status.push('c');
 }
 
 flightSchedule([
@@ -36,7 +35,7 @@ function arrayToObj(array){
 
     const flight = {
         destination : null,
-        status : null,
+        status : ['Ready to fly'],
         string : null,
         print(){
             console.log({ Destination : this.destination, Status: this.status});
@@ -47,7 +46,6 @@ function arrayToObj(array){
     let destination = info[1];
     let string = info[0];
     flight.destination = destination;
-    flight.status = [];
     flight.string = string;
     return flight;
 }
