@@ -1,4 +1,3 @@
-// FIXME 60/100
 function flightSchedule(input){
     function changeStatusIfUnchanged(allFlights, status){
         allFlights.forEach((f) => f.status.push(status));
@@ -32,16 +31,18 @@ function flightSchedule(input){
             status : ['Ready to fly'],
             code : null,
             print() {
-                if (this.status.length < 3) {
+                if (this.status[1] === 'Ready to fly'){
+                    // this.status[this.status.length - 1]
+                    console.log({Destination: this.destination, Status: this.status[this.status.length - 1]});
+                }
+                else if (this.status[this.status.length - 1] === this.status[this.status.length - 2]) {
                     console.log({Destination: this.destination, Status: this.status[this.status.length - 1]});
                 }
             }
         }
 
-        let info = array.split(' ');
-        let destination = info[1];
-        let code = info[0];
-        flight.destination = destination;
+        let [code, ...destination] = array.split(' ');
+        flight.destination = destination.join(' ');
         flight.code = code;
         return flight;
     }
@@ -55,5 +56,3 @@ function flightSchedule(input){
 
     flights.forEach((f) => f.print());
 }
-
-flightSchedule([["WN269 Delaware","FL2269 Oregon","WN498 Las vegas","WN3145 Ohio","WN612 Alabama","WN4010 New York","WN1173 California","DL2120 Texas","KL5744 Illinois","WN678 Pennsylvania"],["DL2120 Cancelled","WN612 Cancelled","WN1173 Cancelled","SK330 Cancelled"],["Ready to fly"]])
