@@ -1,8 +1,12 @@
 function schoolRegister(array) {
     class Grade {
-        constructor(grade, students) {
+        constructor(grade) {
             this.grade = grade;
-            this.students = students;
+            this.students = [];
+        }
+
+        addStudent(student) {
+            this.students.push(student);
         }
 
         get avgScore() {
@@ -20,10 +24,9 @@ function schoolRegister(array) {
 
     function infoArrayToClass(infoArray) {
         let pvPairs = infoArray.split(', ');
-        let pvName = pvPairs[0].split(': ')[1];
-        let pvGrade = Number(pvPairs[1].split(': ')[1]) + 1;
-        let pvScore = Number(pvPairs[2].split(': ')[1]);
-        return {name: pvName, grade: pvGrade, score: pvScore};
+        let [pvName, pvGrade, pvScore] = pvPairs.map((p) => p.split(': ')[1]);
+
+        return {name: pvName, grade: Number(pvGrade) + 1, score: Number(pvScore)};
     }
 
     let students = array.map((e) => infoArrayToClass(e))
@@ -32,14 +35,13 @@ function schoolRegister(array) {
 
     let grades = [];
 
-    let lastGrade = null;
+    let lastGrade;
     for (const student of students) {
         if (!lastGrade || lastGrade.grade !== student.grade) {
-            lastGrade = new Grade(student.grade, [student]);
+            lastGrade = new Grade(student.grade);
             grades.push(lastGrade);
-            continue;
         }
-        lastGrade.students.push(student);
+        lastGrade.addStudent(student);
     }
 
     grades.forEach((g) => g.print());
