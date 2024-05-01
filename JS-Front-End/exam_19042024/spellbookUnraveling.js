@@ -7,7 +7,7 @@ function solve(input){
 
         switch (command) {
             case 'RemoveEven':
-                magicString = [...magicString].filter((_, i) => i % 2 == 0).join('');
+                magicString = [...magicString].filter((_, i) => i % 2 === 0).join('');
                 console.log(magicString);
                 break;
                 
@@ -24,11 +24,10 @@ function solve(input){
                 if (!magicString.includes(originalSubstr)){
                     console.log('Error');
                     continue;
-                };
+                }
 
                 let reversedSubstr = [...originalSubstr].reverse().join('');
-                magicString = magicString.replace(originalSubstr, '');
-                magicString = magicString.concat(reversedSubstr);
+                magicString = magicString.replace(originalSubstr, '').concat(reversedSubstr);
                 console.log(magicString);
                 break;
         }
