@@ -7,6 +7,7 @@ function solve(input){
 
         switch (command) {
             case 'RemoveEven':
+                //splits string into char array + ignores characters at odd indexes + joins array into string
                 magicString = [...magicString].filter((_, i) => i % 2 === 0).join('');
                 console.log(magicString);
                 break;
@@ -26,7 +27,9 @@ function solve(input){
                     continue;
                 }
 
+                //changes string into array, reverses characters and joins back into string
                 let reversedSubstr = [...originalSubstr].reverse().join('');
+                //replaces the original substring with an empty string + concat the reversed substring at the end of the string
                 magicString = magicString.replace(originalSubstr, '').concat(reversedSubstr);
                 console.log(magicString);
                 break;
