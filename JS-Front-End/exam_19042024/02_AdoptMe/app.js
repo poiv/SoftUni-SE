@@ -6,13 +6,20 @@ function solve() {
     const age = document.getElementById('age');
     const gender = document.getElementById('gender');
     const adoptionInfo = document.getElementById('adoption-info');
+    const adoptedList = document.getElementById('adopted-list');
 
     let currentAdoptionValues = {};
+
+    //FIXME: list doesn't work with multiple animals
 
 
     const adoptBtn = document.getElementById('adopt-btn');
 
     adoptBtn.addEventListener("click", adoptHandler);
+
+    function clearHandler(){
+        adoptedList.innerHTML = '';
+    }
 
 
     function editHandler(){
@@ -23,13 +30,42 @@ function solve() {
       adoptionInfo.innerHTML = '';
     }
 
+    function arrayToPetInfo(array){
+        let type = array[0].textContent.split(':')[1];
+        let gender = array[1].textContent.split(':')[1];
+        let age = array[2].textContent.split(':')[1];
+        return {type: type, age: age, gender: gender};
+    }
 
-    function finishHandler(){
-        //TODO
+
+    function finishAdoptionHandler(event){
+
+        currentAdoptionValues = arrayToPetInfo(Array.from(event.target.parentNode.parentNode.firstChild.childNodes));
+
         adoptionInfo.innerHTML = '';
 
-        // save to current
+        const li = document.createElement('li');
+        const article = document.createElement('article');
+        const pType = document.createElement('p');
+        const pGender = document.createElement('p');
+        const pAge = document.createElement('p');
+        const clearBtn = document.createElement('button');
 
+        adoptedList.appendChild(li);
+        li.appendChild(article);
+        li.appendChild(clearBtn);
+        li.appendChild(pType);
+        li.appendChild(pGender);
+        li.appendChild(pAge);
+
+        pType.textContent = currentAdoptionValues.type;
+        pGender.textContent = currentAdoptionValues.gender;
+        pAge.textContent = currentAdoptionValues.age;
+
+        clearBtn.classList.add('clear-btn');
+        clearBtn.textContent = 'Clear';
+
+        clearBtn.addEventListener('click', clearHandler);
 
     }
 
@@ -78,7 +114,7 @@ function solve() {
         gender.value = '';
 
         editBtn.addEventListener('click', editHandler);
-        doneBtn.addEventListener('click', finishHandler)
+        doneBtn.addEventListener('click', finishAdoptionHandler)
     }
 }
   
