@@ -8,26 +8,22 @@ function solve() {
     const adoptionInfo = document.getElementById('adoption-info');
     const adoptedList = document.getElementById('adopted-list');
 
-    let currentAdoptionValues = {};
-
-    //FIXME: list doesn't work with multiple animals
-
-
     const adoptBtn = document.getElementById('adopt-btn');
 
     adoptBtn.addEventListener("click", adoptHandler);
 
-    function clearHandler(){
-        adoptedList.innerHTML = '';
+    function clearHandler(e){
+        e.target.parentNode.innerHTML = '';
     }
 
+    function editHandler(e){
 
-    function editHandler(){
-      animalType.value = currentAdoptionValues.type;
-      age.value = currentAdoptionValues.age;
-      gender.value = currentAdoptionValues.gender;
+        let pet = arrayToPetInfo(e.target.parentNode.parentNode.firstChild.childNodes);
 
-      adoptionInfo.innerHTML = '';
+        animalType.value = pet.type;
+        age.value = pet.age;
+        gender.value = pet.gender;
+        e.target.parentNode.parentNode.innerHTML = '';
     }
 
     function arrayToPetInfo(array){
@@ -40,9 +36,9 @@ function solve() {
 
     function finishAdoptionHandler(event){
 
-        currentAdoptionValues = arrayToPetInfo(Array.from(event.target.parentNode.parentNode.firstChild.childNodes));
+        let pet = arrayToPetInfo(event.target.parentNode.parentNode.firstChild.childNodes);
 
-        adoptionInfo.innerHTML = '';
+        event.target.parentNode.parentNode.innerHTML = '';
 
         const li = document.createElement('li');
         const article = document.createElement('article');
@@ -58,9 +54,9 @@ function solve() {
         li.appendChild(pGender);
         li.appendChild(pAge);
 
-        pType.textContent = currentAdoptionValues.type;
-        pGender.textContent = currentAdoptionValues.gender;
-        pAge.textContent = currentAdoptionValues.age;
+        pType.textContent = pet.type;
+        pGender.textContent = pet.gender;
+        pAge.textContent = pet.age;
 
         clearBtn.classList.add('clear-btn');
         clearBtn.textContent = 'Clear';
@@ -103,10 +99,6 @@ function solve() {
         pType.innerText = 'Pet:' + animalType.value;
         pGender.innerText = 'Gender:' + gender.value;
         pAge.innerText = 'Age:' + age.value;
-
-        //save input field values
-        currentAdoptionValues = {type: animalType.value, gender: gender.value, age: age.value};
-
 
         // clear input fields
         animalType.value = '';
