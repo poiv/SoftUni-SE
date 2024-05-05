@@ -1,6 +1,7 @@
 window.addEventListener("load", solve);
 
 function solve() {
+    const form = document.querySelector('form');
 
     const animalType = document.getElementById('type');
     const age = document.getElementById('age');
@@ -10,103 +11,78 @@ function solve() {
 
     const adoptBtn = document.getElementById('adopt-btn');
 
-    adoptBtn.addEventListener("click", adoptHandler);
-
-    function clearHandler(e){
-        e.target.parentNode.innerHTML = '';
-    }
-
-    function editHandler(e){
-
-        let pet = arrayToPetInfo(e.target.parentNode.parentNode.firstChild.childNodes);
-
-        animalType.value = pet.type;
-        age.value = pet.age;
-        gender.value = pet.gender;
-        e.target.parentNode.parentNode.innerHTML = '';
-    }
-
-    function arrayToPetInfo(array){
-        let type = array[0].textContent.split(':')[1];
-        let gender = array[1].textContent.split(':')[1];
-        let age = array[2].textContent.split(':')[1];
-        return {type: type, age: age, gender: gender};
-    }
-
-
-    function finishAdoptionHandler(event){
-
-        let pet = arrayToPetInfo(event.target.parentNode.parentNode.firstChild.childNodes);
-
-        event.target.parentNode.parentNode.innerHTML = '';
-
-        const li = document.createElement('li');
-        const article = document.createElement('article');
-        const pType = document.createElement('p');
-        const pGender = document.createElement('p');
-        const pAge = document.createElement('p');
-        const clearBtn = document.createElement('button');
-
-        adoptedList.appendChild(li);
-        li.appendChild(article);
-        li.appendChild(clearBtn);
-        li.appendChild(pType);
-        li.appendChild(pGender);
-        li.appendChild(pAge);
-
-        pType.textContent = pet.type;
-        pGender.textContent = pet.gender;
-        pAge.textContent = pet.age;
-
-        clearBtn.classList.add('clear-btn');
-        clearBtn.textContent = 'Clear';
-
-        clearBtn.addEventListener('click', clearHandler);
-
-    }
+    adoptBtn.addEventListener('click', adoptHandler);
 
     function adoptHandler() {
+
         if (!animalType.value || !age.value || !gender.value) {
             return;
         }
 
-
-        // create adoption info structure
         const list = document.createElement('li');
         const article = document.createElement('article');
         const buttons = document.createElement('div');
         const editBtn = document.createElement('button');
         const doneBtn = document.createElement('button');
         const pType = document.createElement('p');
-        const pGender = document.createElement('p');
         const pAge = document.createElement('p');
+        const pGender = document.createElement('p');
 
         adoptionInfo.appendChild(list);
         list.appendChild(article);
         list.appendChild(buttons);
-        buttons.append(editBtn, doneBtn);
-        article.append(pType, pGender, pAge);
+
+        //append doesnt work in judge
+        buttons.appendChild(editBtn);
+        buttons.appendChild(doneBtn);
+        article.appendChild(pType);
+        article.appendChild(pGender);
+        article.appendChild(pAge);
+
 
         buttons.classList.add('buttons');
         editBtn.classList.add('edit-btn');
         doneBtn.classList.add('done-btn');
 
+        const pet = {type: animalType.value, age:age.value, gender: gender.value};
 
-        // set values
         editBtn.textContent = 'Edit';
         doneBtn.textContent = 'Done';
 
-        pType.innerText = 'Pet:' + animalType.value;
-        pGender.innerText = 'Gender:' + gender.value;
-        pAge.innerText = 'Age:' + age.value;
+        pType.innerText = `Pet:${pet.type}`;
+        pGender.innerText = `Gender:${pet.gender}`;
+        pAge.innerText = `Age:${pet.age}`;
 
-        // clear input fields
-        animalType.value = '';
-        age.value = '';
-        gender.value = '';
+        form.reset();
 
         editBtn.addEventListener('click', editHandler);
         doneBtn.addEventListener('click', finishAdoptionHandler)
+
+
+        function finishAdoptionHandler() {
+            const clearBtn = document.createElement('button');
+
+            adoptedList.appendChild(list);
+            list.removeChild(buttons);
+            list.appendChild(clearBtn);
+
+            clearBtn.classList.add('clear-btn');
+            clearBtn.textContent = 'Clear';
+
+            clearBtn.addEventListener('click', clearHandler);
+
+            function clearHandler() {
+                adoptedList.removeChild(list);
+            }
+        }
+
+        function editHandler() {
+            animalType.value = pet.type;
+            age.value = pet.age;
+            gender.value = pet.gender;
+
+            adoptionInfo.removeChild(list);
+        }
     }
 }
   
