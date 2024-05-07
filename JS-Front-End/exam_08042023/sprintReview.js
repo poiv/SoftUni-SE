@@ -9,9 +9,9 @@ function solve(array) {
 
         let foundAssignee = assignees.find((a) => a.assignee === assignee);
         if (foundAssignee) {
-            foundAssignee.tasks.push({taskId, title, status, estimatedPoints});
+            foundAssignee.tasks.push({taskId, title, status, estimatedPoints: Number(estimatedPoints)});
         } else {
-            assignees.push({assignee, tasks: [{taskId, title, status, estimatedPoints}]});
+            assignees.push({assignee, tasks: [{taskId, title, status, estimatedPoints: Number(estimatedPoints)}]});
         }
 
         count++;
@@ -24,7 +24,7 @@ function solve(array) {
         switch (command) {
             case 'Add New':
                 let [taskId, title, status, estimatedPoints] = splitInput;
-                let task = {taskId, title, status, estimatedPoints};
+                let task = {taskId, title, status, estimatedPoints: Number(estimatedPoints)};
                 addNewTask(assignee, task);
                 break;
             case 'Change Status':
@@ -39,7 +39,7 @@ function solve(array) {
     function getStatusCount(status) {
         let byStatus = assignees.flatMap((a) => a.tasks).filter((t) => t.status === status);
         return byStatus.reduce((a, cv) => {
-            return a + Number(cv.estimatedPoints)
+            return a + cv.estimatedPoints
         }, 0);
     }
 
@@ -55,18 +55,25 @@ function solve(array) {
 
     let successfulSprint = donePoints >= (inProgressPoints + codeReviewPoints + toDoPoints);
     if (successfulSprint) {
-        console.log('Sprint was successful!')
+        console.log('Sprint was successful!');
         return;
     }
-    console.log('Sprint was unsuccessful...')
+    console.log('Sprint was unsuccessful...');
 
-    function addNewTask(assigneeName, task) {
+    function isAssigneeFound(assigneeName){
         let found = assignees.find((a) => a.assignee === assigneeName);
         if (!found) {
             console.log(`Assignee ${assigneeName} does not exist on the board!`);
-            return;
+            return false;
         }
-        found.tasks.push(task);
+        return found;
+    }
+
+    function addNewTask(assigneeName, task) {
+        let assigneeFound = isAssigneeFound(assigneeName);
+        if(assigneeFound){
+            assigneeFound.tasks.push(task);
+        }
     }
 
     function changeTaskStatus(assigneeName, taskId, newStatus) {
@@ -92,7 +99,7 @@ function solve(array) {
             return;
         }
 
-        if (index > foundAssignee.tasks.length - 1) {
+        if (index > foundAssignee.tasks.length - 1 || index < 0) {
             console.log('Index is out of range!');
             return;
         }
