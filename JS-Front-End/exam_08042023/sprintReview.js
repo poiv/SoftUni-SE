@@ -17,23 +17,22 @@ function solve(array) {
         count++;
     }
 
+
+    const doCommand = {
+        'Add New': (assignee, taskId, title, status, estimatedPoints) => {
+            addNewTask(assignee, {taskId, title, status, estimatedPoints: Number(estimatedPoints)});
+        }, 'Change Status': (assignee, taskId, newStatus) => {
+            changeTaskStatus(assignee, taskId, newStatus);
+        }, 'Remove Task': (assignee, index) => {
+            removeTask(assignee, Number(index));
+        }
+    }
+
     for (const commandInput of array) {
         let splitInput = commandInput.split(':');
         let command = splitInput.shift();
         let assignee = splitInput.shift();
-        switch (command) {
-            case 'Add New':
-                let [taskId, title, status, estimatedPoints] = splitInput;
-                let task = {taskId, title, status, estimatedPoints: Number(estimatedPoints)};
-                addNewTask(assignee, task);
-                break;
-            case 'Change Status':
-                changeTaskStatus(assignee, splitInput[0], splitInput[1]);
-                break;
-            case 'Remove Task':
-                removeTask(assignee, Number(splitInput[0]));
-                break;
-        }
+        doCommand[command](assignee, ...splitInput);
     }
 
     function getStatusCount(status) {
@@ -54,13 +53,11 @@ function solve(array) {
     console.log(`Done Points: ${donePoints}pts`);
 
     let successfulSprint = donePoints >= (inProgressPoints + codeReviewPoints + toDoPoints);
-    if (successfulSprint) {
-        console.log('Sprint was successful!');
-        return;
-    }
-    console.log('Sprint was unsuccessful...');
+    console.log(
+        successfulSprint ? 'Sprint was successful!' : 'Sprint was unsuccessful...'
+    );
 
-    function isAssigneeFound(assigneeName){
+    function isAssigneeFound(assigneeName) {
         let found = assignees.find((a) => a.assignee === assigneeName);
         if (!found) {
             console.log(`Assignee ${assigneeName} does not exist on the board!`);
@@ -71,17 +68,14 @@ function solve(array) {
 
     function addNewTask(assigneeName, task) {
         let assigneeFound = isAssigneeFound(assigneeName);
-        if(assigneeFound){
+        if (assigneeFound) {
             assigneeFound.tasks.push(task);
         }
     }
 
     function changeTaskStatus(assigneeName, taskId, newStatus) {
-        let foundAssignee = assignees.find((a) => a.assignee === assigneeName);
-        if (!foundAssignee) {
-            console.log(`Assignee ${assigneeName} does not exist on the board!`);
-            return;
-        }
+        let foundAssignee = isAssigneeFound(assigneeName);
+        if (!foundAssignee) return;
 
         let foundTask = foundAssignee.tasks.find((t) => t.taskId === taskId);
         if (!foundTask) {
@@ -93,11 +87,9 @@ function solve(array) {
     }
 
     function removeTask(assigneeName, index) {
-        let foundAssignee = assignees.find((a) => a.assignee === assigneeName);
-        if (!foundAssignee) {
-            console.log(`Assignee ${assigneeName} does not exist on the board!`);
-            return;
-        }
+        let foundAssignee = isAssigneeFound(assigneeName);
+
+        if (!foundAssignee) return;
 
         if (index > foundAssignee.tasks.length - 1 || index < 0) {
             console.log('Index is out of range!');
