@@ -56,18 +56,21 @@ function solve() {
         assigneeDiv.textContent = assignee.value;
         deleteBtn.textContent = 'Delete';
         deleteBtn.addEventListener('click', onLoadDelete);
-        // ToDO: add points
         addToTotalPoints(points.value);
+
         form.reset();
 
 
     }
 
+    function getTotalPoints(){
+        return Number(totalSprintPoints.innerText.split(' ')[2].replace('pts', ''));
+    }
+
     function addToTotalPoints(points){
-        // console.log(totalSprintPoints);
-        let currentPoints = totalSprintPoints.innerText.split(' ')[2].replace('pts', '');
-        let newTotal =  Number(currentPoints) + Number(points);
-        totalSprintPoints.innerText.replace(currentPoints, newTotal);
+        let currentPoints = getTotalPoints();
+        let newTotal =  currentPoints + Number(points);
+        totalSprintPoints.textContent = totalSprintPoints.textContent.replace(currentPoints, newTotal);
 
     }
 
@@ -94,7 +97,10 @@ function solve() {
         deleteBtn.addEventListener('click', onDelete);
     }
 
-    function onDelete(e){
+    function onDelete(){
+        let newTotal = getTotalPoints() - Number(points.value);
+        totalSprintPoints.textContent = totalSprintPoints.textContent.replace(getTotalPoints(), newTotal);
+
         form.reset();
         hiddenTaskId.value = taskSection.children[2].id;
         taskSection.children[2].remove();
