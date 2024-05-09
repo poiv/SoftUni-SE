@@ -7,6 +7,12 @@ function solve() {
     const points = document.getElementById('points');
     const assignee = document.getElementById('assignee');
     const createBtn = document.getElementById('create-task-btn');
+    const deleteBtn = document.getElementById('delete-task-btn');
+
+    const hiddenTaskId = document.getElementById('task-id');
+    const totalSprintPoints = document.getElementById('total-sprint-points');
+
+    const form = document.getElementById('create-task-form');
 
     const taskSection = document.getElementById('tasks-section');
 
@@ -24,12 +30,10 @@ function solve() {
         const actionsDiv = document.createElement('div');
         const deleteBtn = document.createElement('button');
 
-        article.id = `task-${1}`;
+        article.id = `task-${taskSection.children.length-1}`;
         article.classList.add('task-card');
         labelDiv.classList.add('task-card-label');
-        labelDiv.classList.add(label.value
-            .replaceAll(' ', '-')
-            .toLowerCase());
+        labelDiv.classList.add(getLabelClass());
         titleH3.classList.add('task-card-title');
         descriptionP.classList.add('task-card-description');
         pointsDiv.classList.add('task-card-points');
@@ -45,33 +49,80 @@ function solve() {
         article.appendChild(actionsDiv);
         actionsDiv.appendChild(deleteBtn);
 
-        let labelIcon = getLabelIcon();
-        labelDiv.textContent = `${label.value} ${labelIcon}`;
+        labelDiv.innerHTML = `${label.value} ${getLabelSymbol[label.value]()}`
         titleH3.textContent = title.value;
         descriptionP.textContent = description.value;
         pointsDiv.textContent = points.value;
         assigneeDiv.textContent = assignee.value;
-        deleteBtn.value = 'Delete';
+        deleteBtn.textContent = 'Delete';
+        deleteBtn.addEventListener('click', onLoadDelete);
+        // ToDO: add points
+        addToTotalPoints(points.value);
+        form.reset();
 
-        clearInputFields();
+
     }
 
-    function clearInputFields(){
-        title.value = '';
-        description.value = '';
-        label.value = '';
-        points.value = '';
-        assignee.value = '';
+    function addToTotalPoints(points){
+        // console.log(totalSprintPoints);
+        let currentPoints = totalSprintPoints.innerText.split(' ')[2].replace('pts', '');
+        let newTotal =  Number(currentPoints) + Number(points);
+        totalSprintPoints.innerText.replace(currentPoints, newTotal);
+
     }
+
+    function onLoadDelete(e){
+        let parentArticle = e.target.parentNode.parentNode;
+        let articleChildren = Array.from(parentArticle.children);
+        label.value = articleChildren[0].textContent.slice(0, -2);
+        title.value = articleChildren[1].textContent;
+        description.value = articleChildren[2].textContent;
+        points.value = articleChildren[3].textContent;
+        assignee.value = articleChildren[4].textContent;
+
+        deleteBtn.removeAttribute('disabled');
+        createBtn.setAttribute('disabled', 'true');
+        title.setAttribute('disabled', 'true');
+        description.setAttribute('disabled', 'true');
+        label.setAttribute('disabled', 'true');
+        points.setAttribute('disabled', 'true');
+        assignee.setAttribute('disabled', 'true');
+
+
+        hiddenTaskId.value = parentArticle.id;
+
+        deleteBtn.addEventListener('click', onDelete);
+    }
+
+    function onDelete(e){
+        form.reset();
+        hiddenTaskId.value = taskSection.children[2].id;
+        taskSection.children[2].remove();
+
+        deleteBtn.setAttribute('disabled', 'true')
+        createBtn.removeAttribute('disabled');
+        title.removeAttribute('disabled');
+        description.removeAttribute('disabled');
+        label.removeAttribute('disabled');
+        points.removeAttribute('disabled');
+        assignee.removeAttribute('disabled');
+    }
+
 
     function isMissingInput(){
         return !title.value || !description.value || !label.value || !points.value || !assignee.value;
     }
 
-    function getLabelIcon(){
-        let labelText = label.value;
-        if (labelText === 'feature') return '&#8865';
-        if (labelText === 'low-priority') return '&#9737';
-        if (labelText === 'high-priority') return '&#9888';
+    const getLabelSymbol = {
+        'Feature':() => '&#8865',
+        'Low Priority Bug':() => '&#9737',
+        'High Priority Bug':() => '&#9888'
     }
+
+    function getLabelClass(){
+        return label.value
+            .replaceAll(' ', '-')
+            .toLowerCase();
+    }
+
 }
