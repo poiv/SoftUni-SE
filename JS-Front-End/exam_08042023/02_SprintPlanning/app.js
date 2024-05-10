@@ -30,6 +30,7 @@ function solve() {
         const actionsDiv = document.createElement('div');
         const deleteBtn = document.createElement('button');
 
+
         article.id = `task-${taskSection.children.length - 1}`;
         article.classList.add('task-card');
         labelDiv.classList.add('task-card-label');
@@ -66,7 +67,7 @@ function solve() {
     function updatePoints(op) {
         let total = Number(totalSprintPoints.innerText.split(' ')[2].replace('pts', ''));
         let newTotal = op === 'add' ? total + Number(points.value) : total - Number(points.value);
-        totalSprintPoints.innerText = totalSprintPoints.innerText.replace(total, newTotal);
+        totalSprintPoints.innerText = `Total Points ${newTotal}pts`;
     }
 
 
@@ -94,7 +95,7 @@ function solve() {
     }
 
     function onDelete() {
-        updatePoints('sub');
+        updatePoints('remove');
 
         form.reset();
 
